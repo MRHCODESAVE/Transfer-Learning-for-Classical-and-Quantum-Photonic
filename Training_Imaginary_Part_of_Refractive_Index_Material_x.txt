@@ -1,0 +1,22 @@
+% Part 1: Choose one of the training functions: 'trainlm','trainscg', 'traingd', and the numbers of hidden neurons
+net_imaginary = fitnet([6],'trainlm');
+% Part 2: Choose a performance function for the network, while here is mean squared error
+net_imaginary.performFcn = 'mse'; 
+% Part 3: Dataset portions for training, validation, testing datasets
+net_imaginary.divideParam.trainRatio = 0.7;
+net_imaginary.divideParam.valRatio = 0.15;
+net_imaginary.divideParam.testRatio = 0.15;
+% Part 4: Training the neural network (i.e., net_ imaginary)
+[net_imaginary,training_info] = train(net_imaginary,input_new',N_imaginary_new_noise');
+% Part 5: Regression plot
+figure
+plotregression(N_imaginary_new_noise',net_imaginary (input_new'))
+h = findobj('Marker', 'o');
+set(h,'Marker','.', 'MarkerSize',6)
+grid on
+% Part 6: Error plot
+figure
+plot(input_new',N_imaginary_new_noise'-net_imaginary (input_new'),'b-')
+xlabel('Energy (eV)')
+ylabel('Errors for the Imaginary Part')
+grid on
