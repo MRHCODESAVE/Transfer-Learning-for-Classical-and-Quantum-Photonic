@@ -1,0 +1,34 @@
+% Part 1: Knowledge Transferring
+load net_real.mat;
+net_real_TL=net_real;
+% Part 2: Choose the numbers of hidden neurons, activation function, and learning rate for 'traingd'
+net_real_TL = fitnet([6],'traingd');
+net_real_TL.trainParam.lr=0.01;
+% Part 3: Choose a performance function for the network, while here is mean squared error
+net_real_TL.performFcn = 'mse'; 
+% Part 4: Dataset portions for training, validation, testing datasets, the numbers of epochs
+net_real_TL.divideParam.trainRatio = 0.7;
+net_real_TL.divideParam.valRatio = 0.15;
+net_real_TL.divideParam.testRatio = 0.15;
+net_real_TL.trainParam.epochs=100000;
+% Part 5: Training the neural network (i.e., net_real_TL)
+[net_real_TL,training_info] = train(net_real_TL,input_new',N_real_new_noise');
+% Part 6: Regression plot
+figure
+plotregression(N_real_new_noise',net_real_TL(input_new'))
+h = findobj('Marker', 'o');
+set(h,'Marker','.', 'MarkerSize',6)
+grid on
+% Part 7: Error plot
+figure
+plot(input_new',N_real_new_noise'-net_real_TL(input_new'),'b-')
+xlabel('Energy (eV)')
+ylabel('Errors for the Real Part')
+grid on
+%Part 8: SNR calculation and plotting
+SNR1=snr(N_real_new_noise(1:end),-N_real_new(1:end)'+N_real_new_noise(1:end)')
+SNR2=snr(net_real_TL(input_new(1:end)'),-N_real_new(1:end)'+net_real_TL(input_new(1:end)'))
+plot(input_new(1:end)',abs(-N_real_new(1:end)'+N_real_new_noise(1:end)'))
+hold on
+plot(input_new(1:end)',abs(-N_real_new(1:end)'+net_real_TL(input_new(1:end)')))
+hold on
