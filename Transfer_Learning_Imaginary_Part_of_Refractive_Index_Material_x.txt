@@ -1,0 +1,27 @@
+% Part 1: Knowledge Transferring
+load net_imaginary.mat;
+net_imaginary_TL=net_imaginary;
+% Part 2: Choose the numbers of hidden neurons, activation function, and learning rate for 'traingd'
+net_imaginary_TL = fitnet([6],'traingd');
+net_imaginary_TL.trainParam.lr=1e-3;
+% Part 3: Choose a performance function for the network, while here is mean squared error
+net_imaginary_TL.performFcn = 'mse'; 
+% Part 4: Dataset portions for training, validation, testing datasets, the numbers of epochs
+net_imaginary_TL.divideParam.trainRatio = 0.7;
+net_imaginary_TL.divideParam.valRatio = 0.15;
+net_imaginary_TL.divideParam.testRatio = 0.15;
+net_imaginary_TL.trainParam.epochs=100000;
+% Part 5: Training the neural network (i.e., net_imaginary_TL)
+[net_imaginary_TL,training_info] = train(net_imaginary_TL,input_new',N_imaginary_new_noise');
+% Part 6: Regression plot
+figure
+plotregression(N_imaginary_new_noise',net_imaginary_TL(input_new'))
+h = findobj('Marker', 'o');
+set(h,'Marker','.', 'MarkerSize',6)
+grid on
+% Part 7: Error plot
+figure
+plot(input_new',N_imaginary_new_noise'-net_imaginary_TL(input_new'),'b-')
+xlabel('Energy (eV)')
+ylabel('Errors for the Imaginary Part')
+grid on
