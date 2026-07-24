@@ -1,0 +1,50 @@
+clc
+clear
+% Part 1: Load save data
+load Material_x.mat
+%Part 2: Definition of vectors corresponding to the input of the ANN, real part of refractive index, and imaginary part of that
+input=Material_x(:,1);
+N_real=Material_x(:,2);
+N_imaginary=Material_x(:,3);
+%Part 3: Original dataset size, and energy step
+sizedata=size (input,1);
+Delta_ev=0.002;
+%Part 4: Increasing the size of dataset by a linear interpolation between each sample of the original dataset
+newsize=1;
+for num_sample=1:sizedata-1
+    m=(input(num_sample+1,1)-input(num_sample,1))/Delta_ev;
+    m_new=floor(m);
+    a=(N_real(num_sample+1,1)-N_real(num_sample,1))/(input(num_sample+1,1)-input(num_sample,1));
+    b=(N_imaginary(num_sample+1,1)-N_imaginary(num_sample,1))/(input(num_sample+1,1)-input(num_sample,1));
+    for num=1:m_new
+        input_new(newsize+num-1,1)=input(num_sample,1)+(num-1)*Delta_ev;
+        N_real_new(newsize+num-1,1)=N_real(num_sample,1)+a*(input_new(newsize+num-1,1)-input(num_sample,1));
+        N_imaginary_new(newsize+num-1,1)=N_imaginary(num_sample,1)+b*(input_new(newsize+num-1,1)-input(num_sample,1));
+    end
+    newsize=size(input_new,1)+1;
+end
+%Part 5: Definition of the noise vectors corresponding to the real and imaginary vectors of the refractive index
+noise_size=size(input_new,1);
+noise_real = unifrnd(-0.04,0.04,1,noise_size);
+noise_imaginary = unifrnd(-0.06,0.06,1,noise_size);
+%Part 6: Adding the noise to the new generated dataset
+N_real_new_noise=N_real_new + noise_real';
+N_imaginary_new_noise=N_imaginary_new + noise_imaginary';
+%Part 7: Plots, corresponding to the real part (without and with noise)
+figure
+plot(input_new,N_real_new,'k-')
+hold on
+plot(input_new,N_real_new_noise,':')
+legend('Real Part (Without Noise)', 'Real Part (With Noise)')
+xlabel('Energy (eV)')
+ylabel('Real Part of Refractive Index')
+grid on
+%Part 8: Plots, corresponding to the imaginary part (without and with noise)
+figure
+plot(input_new,N_imaginary_new,'k-')
+hold on
+plot(input_new,N_imaginary_new_noise,':')
+legend('Imaginary Part (Without Noise)', 'Imaginary Part (With Noise)')
+xlabel('Energy (eV)')
+ylabel('Imaginary Part of Refractive Index')
+grid on
