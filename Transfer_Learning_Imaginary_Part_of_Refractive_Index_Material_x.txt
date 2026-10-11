@@ -1,8 +1,8 @@
 % Part 1: Knowledge Transferring
 load net_imaginary.mat;
 net_imaginary_TL=net_imaginary;
-% Part 2: Choose the numbers of hidden neurons, activation function, and learning rate for 'traingd'
-net_imaginary_TL = fitnet([6],'traingd');
+% Part 2: Choose activation function, and learning rate for 'traingd'
+net_imaginary_TL.trainFcn = 'traingd';
 net_imaginary_TL.trainParam.lr=1e-3;
 % Part 3: Choose a performance function for the network, while here is mean squared error
 net_imaginary_TL.performFcn = 'mse'; 
